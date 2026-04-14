@@ -19,7 +19,7 @@ export default function RootLayout({
       lang="ja"
       className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} ${GeistPixelGrid.variable} ${GeistPixelCircle.variable} ${GeistPixelTriangle.variable} ${GeistPixelLine.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col items-center justify-center font-sans text-gray-500 dark:text-gray-40 bg-zinc-50 dark:bg-gray-800">{children}</body>
+      <body className="min-h-full flex flex-col items-center justify-center font-sans text-gray-500 dark:text-gray-40 bg-zinc-50 dark:bg-zinc-950">{children}</body>
     </html>
   );
 }

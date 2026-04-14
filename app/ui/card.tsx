@@ -1,0 +1,8 @@
+export const Card = ({ title, children }: { title: string, children: React.ReactNode }) => (
+  <div className="flex flex-col items-center gap-6 p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-600 max-w-2xl mx-auto">
+    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{title}</h2>
+    <div className="flex flex-col md:flex-row gap-8 text-gray-700 dark:text-gray-200 items-center justify-center">
+      {children}
+    </div>
+  </div>
+)
