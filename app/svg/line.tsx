@@ -5,7 +5,7 @@ import path from 'path';
 export const LineGraph = async () => {
   const filePath = path.join(process.cwd(), 'public', 'stock_4689.csv');
   const csv = await fs.readFile(filePath, 'utf-8');
-  
+
   const lines = csv.trim().split('\n').slice(1);
   const data = lines.map(line => {
     // CSV fields are surrounded by quotes, so line format is: "val1","val2"...
@@ -48,8 +48,8 @@ export const LineGraph = async () => {
 
   return (
     <Card title="株価推移 (終値・出来高)">
-      <div className="w-full overflow-x-auto overflow-y-hidden">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-[800px] h-[400px] max-w-full">
+      <div className="w-full min-w-[600px]">
+        <svg viewBox={`0 0 ${width} ${height}`}>
           <defs>
             <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
@@ -64,19 +64,19 @@ export const LineGraph = async () => {
           {/* Grid lines and labels */}
           {gridLines.map((grid, i) => (
             <g key={i}>
-              <line 
-                x1={padding.left} 
-                y1={grid.y} 
-                x2={width - padding.right} 
-                y2={grid.y} 
-                stroke="currentColor" 
-                strokeOpacity="0.1" 
-                strokeDasharray="4 4" 
+              <line
+                x1={padding.left}
+                y1={grid.y}
+                x2={width - padding.right}
+                y2={grid.y}
+                stroke="currentColor"
+                strokeOpacity="0.1"
+                strokeDasharray="4 4"
               />
-              <text 
-                x={width - padding.right + 10} 
-                y={grid.y} 
-                alignmentBaseline="middle" 
+              <text
+                x={width - padding.right + 10}
+                y={grid.y}
+                alignmentBaseline="middle"
                 className="text-xs fill-gray-500 dark:fill-gray-400"
               >
                 ¥{grid.value.toFixed(0)}

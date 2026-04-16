@@ -37,7 +37,7 @@ export const CircleGraph = () => {
 
   return (
     <Card title="地球の大気成分 (Earth's Atmosphere)">
-      <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
+      <div className="flex min-w-[450px] gap-8 items-center justify-center">
         <svg width="240" height="240" viewBox="-10 -10 220 220" className="drop-shadow-md">
           {slices.map((slice, index) => (
             <path
