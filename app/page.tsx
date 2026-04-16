@@ -7,7 +7,7 @@ export default function Home() {
     <main className="flex flex-1 w-full flex-col items-center py-32 px-16 bg-white dark:bg-black sm:items-start">
       <h1 className="text-gray-900 dark:text-white text-lg font-medium tracking-tight mb-4">SVG Draw</h1>
 
-      <div className="flex w-full gap-6 items-start flex-wrap">
+      <div className="flex w-full gap-6 items-start justify-center flex-wrap">
         <CircleGraph />
         <LineGraph />
         <Timeline />
