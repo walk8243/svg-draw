@@ -1,4 +1,5 @@
 import { CircleGraph } from "./svg/circle";
+import { LineGraph } from "./svg/line";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
 
       <div className="flex flex-col w-full gap-6 items-center">
         <CircleGraph />
+        <LineGraph />
       </div>
     </main>
   );
