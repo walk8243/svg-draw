@@ -23,6 +23,54 @@ export const Timeline = () => {
   const P1 = { x: 600, y: 750 }; // P1を左下に寄せることで、後半にかけて急激に伸びる「加速度的な」カーブを作ります
   const P2 = { x: 1500, y: 100 };
 
+  // 時代が進むにつれて太くなる矢印形を、パスとして計算します
+  const buildThickCurve = () => {
+    const steps = 100;
+    const points1 = [];
+    const points2 = [];
+
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const px = Math.pow(1 - t, 2) * P0.x + 2 * (1 - t) * t * P1.x + Math.pow(t, 2) * P2.x;
+      const py = Math.pow(1 - t, 2) * P0.y + 2 * (1 - t) * t * P1.y + Math.pow(t, 2) * P2.y;
+
+      const vx = 2 * (1 - t) * (P1.x - P0.x) + 2 * t * (P2.x - P1.x);
+      const vy = 2 * (1 - t) * (P1.y - P0.y) + 2 * t * (P2.y - P1.y);
+      const len = Math.sqrt(vx * vx + vy * vy);
+      const nx = -vy / len;
+      const ny = vx / len;
+
+      // 次第に太くなるように調整 (t=0で3px, t=1で約25pxの半径＝合計幅50px)
+      const r = 3 + 22 * Math.pow(t, 2);
+
+      points1.push({ x: px + nx * r, y: py + ny * r });
+      points2.push({ x: px - nx * r, y: py - ny * r });
+    }
+
+    // 矢印の先端部を構成する座標計算
+    const finalVx = 2 * (P2.x - P1.x);
+    const finalVy = 2 * (P2.y - P1.y);
+    const len = Math.sqrt(finalVx * finalVx + finalVy * finalVy);
+    const tx = finalVx / len;
+    const ty = finalVy / len;
+
+    // 矢印の三角部分をより大きく力強く設定
+    const headLength = 130;  // 50 -> 130 に拡大
+    const headWidth = 100;   // 40 -> 100 に拡大 (左右で合計200px幅の巨大な先端)
+
+    const tip = { x: P2.x + tx * headLength, y: P2.y + ty * headLength };
+    const leftCorner = { x: P2.x - ty * headWidth, y: P2.y + tx * headWidth };
+    const rightCorner = { x: P2.x + ty * headWidth, y: P2.y - tx * headWidth };
+
+    let d = `M ${points1[0].x} ${points1[0].y}`;
+    for (let i = 1; i <= steps; i++) d += ` L ${points1[i].x} ${points1[i].y}`;
+    d += ` L ${leftCorner.x} ${leftCorner.y} L ${tip.x} ${tip.y} L ${rightCorner.x} ${rightCorner.y} L ${points2[steps].x} ${points2[steps].y}`;
+    for (let i = steps - 1; i >= 0; i--) d += ` L ${points2[i].x} ${points2[i].y}`;
+    d += " Z";
+
+    return d;
+  };
+
   return (
     <Card title="JavaScriptの歴史・普及の軌跡">
       {/* 
@@ -37,28 +85,20 @@ export const Timeline = () => {
               <stop offset="40%" stopColor="#dcb329" />
               <stop offset="100%" stopColor="#3178C6" />
             </linearGradient>
-
-            {/* 矢印の先端 */}
-            <marker id="arrowhead-curve" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="#3178C6" />
-            </marker>
           </defs>
 
-          {/* 加速度的に伸びる曲線パス（Q: 2次ベジェ曲線） */}
-          <path 
-            d={`M ${P0.x} ${P0.y} Q ${P1.x} ${P1.y} ${P2.x} ${P2.y}`}
-            fill="none"
-            stroke="url(#arrow-gradient-curve)" 
-            strokeWidth="14" 
-            strokeLinecap="round"
-            markerEnd="url(#arrowhead-curve)"
+          {/* 塗りつぶしのダイナミック曲線パスとして描画 */}
+          <path
+            d={buildThickCurve()}
+            fill="url(#arrow-gradient-curve)"
+            className="transition-all duration-700 hover:opacity-90"
           />
 
           {/* Points & Labels */}
           {data.map((d, i) => {
             // t は 0 から 1 の間で変化
             const t = i / (data.length - 1);
-            
+
             // 2次ベジェ曲線の公式を用いて線上のX, Y座標を計算
             // B(t) = (1-t)^2*P0 + 2(1-t)t*P1 + t^2*P2
             const px = Math.pow(1 - t, 2) * P0.x + 2 * (1 - t) * t * P1.x + Math.pow(t, 2) * P2.x;
@@ -70,14 +110,19 @@ export const Timeline = () => {
             let textX = isTopLeft ? px - 15 : px + 15;
             const textY = isTopLeft ? py - 40 : py + 40;
             let anchor = isTopLeft ? "end" : "start" as "start" | "end" | "middle";
-            
+
             // 右端に近づく「Pythonの台頭 (i=11)」は、オリジナル位置（px + 15, start）から
             // 約1文字分だけ左にずらして画面内に収めます
             if (d.title === "Pythonの台頭" || i === 11) {
               anchor = "start";
               textX = px - 15; // px + 15 の状態から30px分左へシフト
             }
-            
+
+            // 「ECMAScript (i=1)」がjQueryと被るため、約3文字分（約60px）左にずらします
+            if (d.title === "ECMAScript" || i === 1) {
+              textX -= 60;
+            }
+
             const strokeColor = i >= 11 ? "#3178C6" : "#e6c300";
 
             return (
