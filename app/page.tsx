@@ -1,6 +1,7 @@
 import { CircleGraph } from "./svg/circle";
 import { LineGraph } from "./svg/line";
 import { Timeline } from "./svg/timeline";
+import { SoccerField } from "./svg/soccer";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <CircleGraph />
         <LineGraph />
         <Timeline />
+        <SoccerField />
       </div>
     </main>
   );
