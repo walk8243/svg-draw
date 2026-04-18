@@ -2,95 +2,165 @@ import { Card } from "@/app/ui/card";
 
 const soccerPosition: { [key: string]: PlayerPosition } = {
   GK: {
+    name: "GK",
     color: "red",
+    order: 1,
   },
   DF: {
+    name: "DF",
     color: "blue",
+    order: 2,
   },
   MF: {
+    name: "MF",
     color: "green",
+    order: 3,
   },
   FW: {
+    name: "FW",
     color: "yellow",
+    order: 4,
   },
 }
 const players: Player[] = [
   {
+    number: 1,
     name: "鈴木 彩艶",
     position: soccerPosition.GK,
     x: 340,
     y: 950,
   },
   {
+    number: 2,
     name: "谷口 彰悟",
     position: soccerPosition.DF,
     x: 100,
     y: 750,
   },
   {
+    number: 3,
     name: "板倉 滉",
     position: soccerPosition.DF,
     x: 250,
     y: 800,
   },
   {
+    number: 4,
     name: "冨安 健洋",
     position: soccerPosition.DF,
     x: 430,
     y: 800,
   },
   {
+    number: 5,
     name: "中山 雄太",
     position: soccerPosition.DF,
     x: 580,
     y: 750,
   },
   {
+    number: 6,
     name: "佐野 海舟",
     position: soccerPosition.MF,
     x: 340,
     y: 600,
   },
   {
+    number: 7,
     name: "守田 英正",
     position: soccerPosition.MF,
     x: 230,
     y: 480,
   },
   {
+    number: 8,
     name: "鎌田 大地",
     position: soccerPosition.MF,
     x: 450,
     y: 480,
   },
   {
+    number: 9,
     name: "三笘 薫",
     position: soccerPosition.FW,
     x: 180,
     y: 250,
   },
   {
+    number: 10,
     name: "久保 建英",
     position: soccerPosition.FW,
     x: 500,
     y: 250,
   },
   {
+    number: 11,
     name: "上田 綺世",
     position: soccerPosition.FW,
     x: 340,
     y: 150,
+  },
+  {
+    number: 12,
+    name: "早川 友基",
+    position: soccerPosition.GK,
+  },
+  {
+    number: 13,
+    name: "渡辺 剛",
+    position: soccerPosition.DF,
+  },
+  {
+    number: 14,
+    name: "伊藤 洋輝",
+    position: soccerPosition.DF,
+  },
+  {
+    number: 15,
+    name: "町田 浩樹",
+    position: soccerPosition.DF,
+  },
+  {
+    number: 16,
+    name: "堂安 律",
+    position: soccerPosition.MF,
+  },
+  {
+    number: 17,
+    name: "伊東 純也",
+    position: soccerPosition.MF,
+  },
+  {
+    number: 18,
+    name: "田中 碧",
+    position: soccerPosition.MF,
+  },
+  {
+    number: 19,
+    name: "前田 大然",
+    position: soccerPosition.FW,
+  },
+  {
+    number: 20,
+    name: "小川 航基",
+    position: soccerPosition.FW,
   },
 ];
 
 export const SoccerField = () => {
   return (
     <Card title="サッカーフォーメーション">
-      <div className="w-[680px] max-w-full">
-        <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
-          <SoccerFieldBase />
-          <SoccerPlayers players={players} />
-        </svg>
+      <div className="flex gap-4 items-start">
+        <div className="w-full min-w-[340px] max-w-[680px]">
+          <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
+            <SoccerFieldBase />
+            <SoccerFieldPlayers players={players} />
+          </svg>
+        </div>
+        <div>
+          <SoccerMembers players={players} />
+          <div className="text-red-700 dark:text-red-200 text-blue-700 dark:text-blue-200 text-green-700 dark:text-green-200 text-yellow-700 dark:text-yellow-200"></div>
+        </div>
       </div>
     </Card>
   );
@@ -156,25 +226,42 @@ const SoccerFieldBase = () => (
   </g>
 );
 
-const SoccerPlayers = ({ players }: { players: Player[] }) => (
+const SoccerFieldPlayers = ({ players }: { players: Player[] }) => (
   <g>
-    {players.map((player, index) => (
-      <SoccerPlayer key={index} {...player} />
+    {players.filter(player => player.x && player.y).map((player, index) => (
+      <SoccerFieldPlayer key={index} {...player} />
     ))}
   </g>
 );
-
-const SoccerPlayer = ({ x, y, name, position }: Player) => (
+const SoccerFieldPlayer = ({ x, y, name, position }: Player) => (
   <g>
     <circle cx={x} cy={y} r={16} fill={position.color} stroke="black" strokeWidth={1} />
-    <text x={x} y={y - 23} textAnchor="middle" fontSize={24} fill="black">{name}</text>
+    <text x={x} y={y! - 23} textAnchor="middle" fontSize={24} fill="black">{name}</text>
   </g>
 );
 
-type PlayerPosition = { color: string };
+const SoccerMembers = ({ players }: { players: Player[] }) => {
+  const groupedPlayers =
+    Object.entries(Object.groupBy(players, (player) => player.position.name))
+      .flatMap(([_key, value]) => value ?? []);
+  return (
+    <ul className="flex flex-col gap-1">
+      {groupedPlayers.map((player, index) => (
+        <li key={index} className="flex gap-2">
+          <span className="w-7 text-right">{player.number}</span>
+          <span className={`w-10 text-center text-${player.position.color}-700 dark:text-${player.position.color}-200`}>{player.position.name}</span>
+          <span className="w-20">{player.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type PlayerPosition = { name: string; color: string; order: number };
 type Player = {
+  number: number;
   name: string;
   position: PlayerPosition;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 };
