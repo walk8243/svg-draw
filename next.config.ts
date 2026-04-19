@@ -1,9 +1,21 @@
 import type { NextConfig } from "next";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 
-const nextConfig: NextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  distDir: 'out',
+const createConfig = (phase: string, { defaultConfig }: { defaultConfig: NextConfig }): NextConfig => {
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    return {
+      ...defaultConfig,
+      experimental: {},
+    };
+  }
+
+  return {
+    ...defaultConfig,
+    output: 'export',
+    trailingSlash: true,
+    distDir: 'docs',
+    experimental: {},
+  };
 };
 
-export default nextConfig;
+export default createConfig;
