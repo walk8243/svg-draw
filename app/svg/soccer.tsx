@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { Card } from "@/app/ui/card";
 
 const soccerPosition: { [key: string]: PlayerPosition } = {
@@ -148,17 +150,44 @@ const players: Player[] = [
 ];
 
 export const SoccerField = () => {
+  const [playersList, setPlayersList] = useState<Player[]>(players);
+  const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
+
+  const handleSelect = (clickedNumber: number) => {
+    if (selectedNumber === null) {
+      setSelectedNumber(clickedNumber);
+    } else if (selectedNumber === clickedNumber) {
+      setSelectedNumber(null);
+    } else {
+      setPlayersList(prev => {
+        const selectedIndex = prev.findIndex(p => p.number === selectedNumber);
+        const clickedIndex = prev.findIndex(p => p.number === clickedNumber);
+        if (selectedIndex === -1 || clickedIndex === -1) return prev;
+
+        const newPlayers = [...prev];
+        const selectedObj = prev[selectedIndex];
+        const clickedObj = prev[clickedIndex];
+
+        newPlayers[selectedIndex] = { ...selectedObj, x: clickedObj.x, y: clickedObj.y };
+        newPlayers[clickedIndex] = { ...clickedObj, x: selectedObj.x, y: selectedObj.y };
+
+        return newPlayers;
+      });
+      setSelectedNumber(null);
+    }
+  };
+
   return (
     <Card title="サッカーフォーメーション">
       <div className="flex gap-4 items-start">
         <div className="w-full min-w-[340px] max-w-[680px]">
           <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
             <SoccerFieldBase />
-            <SoccerFieldPlayers players={players} />
+            <SoccerFieldPlayers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
           </svg>
         </div>
         <div>
-          <SoccerMembers players={players} />
+          <SoccerMembers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
           <div className="text-red-700 dark:text-red-200 text-blue-700 dark:text-blue-200 text-green-700 dark:text-green-200 text-yellow-700 dark:text-yellow-200"></div>
         </div>
       </div>
@@ -226,28 +255,38 @@ const SoccerFieldBase = () => (
   </g>
 );
 
-const SoccerFieldPlayers = ({ players }: { players: Player[] }) => (
+const SoccerFieldPlayers = ({ players, selectedNumber, onSelect }: { players: Player[]; selectedNumber: number | null; onSelect: (num: number) => void }) => (
   <g>
     {players.filter(player => player.x && player.y).map((player, index) => (
-      <SoccerFieldPlayer key={index} {...player} />
+      <SoccerFieldPlayer 
+        key={index} 
+        {...player} 
+        isSelected={selectedNumber === player.number} 
+        onClick={() => onSelect(player.number)}
+      />
     ))}
   </g>
 );
-const SoccerFieldPlayer = ({ x, y, name, position }: Player) => (
-  <g>
-    <circle cx={x} cy={y} r={16} fill={position.color} stroke="black" strokeWidth={1} />
-    <text x={x} y={y! - 23} textAnchor="middle" fontSize={24} fill="black">{name}</text>
+const SoccerFieldPlayer = ({ x, y, name, number, position, isSelected, onClick }: Player & { isSelected?: boolean; onClick?: () => void }) => (
+  <g onClick={onClick} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
+    <circle cx={x} cy={y} r={isSelected ? 20 : 16} fill={position.color} stroke={isSelected ? "#ff0000" : "black"} strokeWidth={isSelected ? 3 : 1} />
+    <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={isSelected ? 16 : 14} fill={position.color === 'yellow' ? 'black' : 'white'} fontWeight={isSelected ? 'bold' : 'normal'}>{number}</text>
+    <text x={x} y={y! - (isSelected ? 27 : 23)} textAnchor="middle" fontSize={isSelected ? 28 : 24} fill={isSelected ? "#ff0000" : "black"} fontWeight={isSelected ? "bold" : "normal"}>{name}</text>
   </g>
 );
 
-const SoccerMembers = ({ players }: { players: Player[] }) => {
+const SoccerMembers = ({ players, selectedNumber, onSelect }: { players: Player[]; selectedNumber: number | null; onSelect: (num: number) => void }) => {
   const groupedPlayers =
     Object.entries(Object.groupBy(players, (player) => player.position.name))
       .flatMap(([_key, value]) => value ?? []);
   return (
     <ul className="flex flex-col gap-1">
       {groupedPlayers.map((player, index) => (
-        <li key={index} className="flex gap-2">
+        <li
+          key={index}
+          className={`flex gap-2 rounded px-1 cursor-pointer transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 ${selectedNumber === player.number ? 'bg-slate-300 dark:bg-slate-700 font-bold' : ''}`}
+          onClick={() => onSelect(player.number)}
+        >
           <span className="w-7 text-right">{player.number}</span>
           <span className={`w-10 text-center text-${player.position.color}-700 dark:text-${player.position.color}-200`}>{player.position.name}</span>
           <span className="w-20">{player.name}</span>
