@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card } from "@/app/ui/card";
 
 const soccerPosition: { [key: string]: PlayerPosition } = {
@@ -152,6 +152,9 @@ const players: Player[] = [
 export const SoccerField = () => {
   const [playersList, setPlayersList] = useState<Player[]>(players);
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<string>("GK");
+  const [selectedName, setSelectedName] = useState<string>("");
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSelect = (clickedNumber: number) => {
     if (selectedNumber === null) {
@@ -179,16 +182,44 @@ export const SoccerField = () => {
 
   return (
     <Card title="サッカーフォーメーション">
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-4 items-start justify-center">
         <div className="w-full min-w-[340px] max-w-[680px]">
           <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
             <SoccerFieldBase />
             <SoccerFieldPlayers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
           </svg>
         </div>
-        <div>
+        <div className="flex flex-col">
           <SoccerMembers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
           <div className="text-red-700 dark:text-red-200 text-blue-700 dark:text-blue-200 text-green-700 dark:text-green-200 text-yellow-700 dark:text-yellow-200"></div>
+          <form className="flex w-max mt-2 gap-2">
+            <div className="flex grow py-2 gap-2">
+              <select name="position"
+                className="flex-none"
+                onChange={(e) => { setSelectedPosition(e.target.value) }}>
+                {Object.keys(soccerPosition).map((position, index) => (
+                  <option key={index} className="bg-slate-300 dark:bg-slate-700" value={position}>{position}</option>
+                ))}
+              </select>
+              <input type="text" name="player" autoComplete="off"
+                ref={nameInputRef}
+                className="w-32 grow border border-solid border-slate-200 rounded-sm"
+                onChange={(e) => { setSelectedName(e.target.value) }} />
+            </div>
+            <div className="shrink-0">
+              <button type="submit"
+                className="px-4 py-2 text-slate-900 border border-solid border-slate-900 hover:text-slate-100 hover:bg-slate-900 dark:bg-slate-100 hover:dark:text-slate-900 hover:dark:bg-slate-200 rounded-md cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectedName === "") return;
+                  if (nameInputRef.current) {
+                    setSelectedName("");
+                    nameInputRef.current.value = "";
+                  }
+                  setPlayersList(prev => [...prev, { number: prev.length + 1, name: selectedName, position: soccerPosition[selectedPosition] }])
+                }}>追加</button>
+            </div>
+          </form>
         </div>
       </div>
     </Card>
@@ -258,10 +289,10 @@ const SoccerFieldBase = () => (
 const SoccerFieldPlayers = ({ players, selectedNumber, onSelect }: { players: Player[]; selectedNumber: number | null; onSelect: (num: number) => void }) => (
   <g>
     {players.filter(player => player.x && player.y).map((player, index) => (
-      <SoccerFieldPlayer 
-        key={index} 
-        {...player} 
-        isSelected={selectedNumber === player.number} 
+      <SoccerFieldPlayer
+        key={index}
+        {...player}
+        isSelected={selectedNumber === player.number}
         onClick={() => onSelect(player.number)}
       />
     ))}
