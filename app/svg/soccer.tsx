@@ -24,160 +24,96 @@ const soccerPosition: { [key: string]: PlayerPosition } = {
     order: 4,
   },
 }
-const players: Player[] = [
-  {
-    number: 1,
-    name: "鈴木 彩艶",
-    position: soccerPosition.GK,
-    x: 340,
-    y: 950,
-  },
-  {
-    number: 2,
-    name: "谷口 彰悟",
-    position: soccerPosition.DF,
-    x: 100,
-    y: 750,
-  },
-  {
-    number: 3,
-    name: "板倉 滉",
-    position: soccerPosition.DF,
-    x: 250,
-    y: 800,
-  },
-  {
-    number: 4,
-    name: "冨安 健洋",
-    position: soccerPosition.DF,
-    x: 430,
-    y: 800,
-  },
-  {
-    number: 5,
-    name: "中山 雄太",
-    position: soccerPosition.DF,
-    x: 580,
-    y: 750,
-  },
-  {
-    number: 6,
-    name: "佐野 海舟",
-    position: soccerPosition.MF,
-    x: 340,
-    y: 600,
-  },
-  {
-    number: 7,
-    name: "守田 英正",
-    position: soccerPosition.MF,
-    x: 230,
-    y: 480,
-  },
-  {
-    number: 8,
-    name: "鎌田 大地",
-    position: soccerPosition.MF,
-    x: 450,
-    y: 480,
-  },
-  {
-    number: 9,
-    name: "三笘 薫",
-    position: soccerPosition.FW,
-    x: 180,
-    y: 250,
-  },
-  {
-    number: 10,
-    name: "久保 建英",
-    position: soccerPosition.FW,
-    x: 500,
-    y: 250,
-  },
-  {
-    number: 11,
-    name: "上田 綺世",
-    position: soccerPosition.FW,
-    x: 340,
-    y: 150,
-  },
-  {
-    number: 12,
-    name: "早川 友基",
-    position: soccerPosition.GK,
-  },
-  {
-    number: 13,
-    name: "渡辺 剛",
-    position: soccerPosition.DF,
-  },
-  {
-    number: 14,
-    name: "伊藤 洋輝",
-    position: soccerPosition.DF,
-  },
-  {
-    number: 15,
-    name: "町田 浩樹",
-    position: soccerPosition.DF,
-  },
-  {
-    number: 16,
-    name: "堂安 律",
-    position: soccerPosition.MF,
-  },
-  {
-    number: 17,
-    name: "伊東 純也",
-    position: soccerPosition.MF,
-  },
-  {
-    number: 18,
-    name: "田中 碧",
-    position: soccerPosition.MF,
-  },
-  {
-    number: 19,
-    name: "前田 大然",
-    position: soccerPosition.FW,
-  },
-  {
-    number: 20,
-    name: "小川 航基",
-    position: soccerPosition.FW,
-  },
+const fieldPositions: FieldPosition[] = [
+  { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+  { id: 2, role: soccerPosition.DF, x: 100, y: 750 },
+  { id: 3, role: soccerPosition.DF, x: 250, y: 800 },
+  { id: 4, role: soccerPosition.DF, x: 430, y: 800 },
+  { id: 5, role: soccerPosition.DF, x: 580, y: 750 },
+  { id: 6, role: soccerPosition.MF, x: 340, y: 600 },
+  { id: 7, role: soccerPosition.MF, x: 230, y: 480 },
+  { id: 8, role: soccerPosition.MF, x: 450, y: 480 },
+  { id: 9, role: soccerPosition.FW, x: 180, y: 250 },
+  { id: 10, role: soccerPosition.FW, x: 500, y: 250 },
+  { id: 11, role: soccerPosition.FW, x: 340, y: 150 },
 ];
 
+const initialPlayers: Player[] = [
+  { number: 1, name: "鈴木 彩艶", position: soccerPosition.GK },
+  { number: 2, name: "谷口 彰悟", position: soccerPosition.DF },
+  { number: 3, name: "板倉 滉", position: soccerPosition.DF },
+  { number: 4, name: "冨安 健洋", position: soccerPosition.DF },
+  { number: 5, name: "中山 雄太", position: soccerPosition.DF },
+  { number: 6, name: "佐野 海舟", position: soccerPosition.MF },
+  { number: 7, name: "守田 英正", position: soccerPosition.MF },
+  { number: 8, name: "鎌田 大地", position: soccerPosition.MF },
+  { number: 9, name: "三笘 薫", position: soccerPosition.FW },
+  { number: 10, name: "久保 建英", position: soccerPosition.FW },
+  { number: 11, name: "上田 綺世", position: soccerPosition.FW },
+  { number: 12, name: "早川 友基", position: soccerPosition.GK },
+  { number: 13, name: "渡辺 剛", position: soccerPosition.DF },
+  { number: 14, name: "伊藤 洋輝", position: soccerPosition.DF },
+  { number: 15, name: "町田 浩樹", position: soccerPosition.DF },
+  { number: 16, name: "堂安 律", position: soccerPosition.MF },
+  { number: 17, name: "伊東 純也", position: soccerPosition.MF },
+  { number: 18, name: "田中 碧", position: soccerPosition.MF },
+  { number: 19, name: "前田 大然", position: soccerPosition.FW },
+  { number: 20, name: "小川 航基", position: soccerPosition.FW },
+];
+
+type SelectionType = { type: 'player', id: number } | { type: 'position', id: number } | null;
+
 export const SoccerField = () => {
-  const [playersList, setPlayersList] = useState<Player[]>(players);
-  const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
+  const [playersList, setPlayersList] = useState<Player[]>(initialPlayers);
+  const [selection, setSelection] = useState<SelectionType>(null);
   const [selectedPosition, setSelectedPosition] = useState<string>("GK");
   const [selectedName, setSelectedName] = useState<string>("");
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSelect = (clickedNumber: number) => {
-    if (selectedNumber === null) {
-      setSelectedNumber(clickedNumber);
-    } else if (selectedNumber === clickedNumber) {
-      setSelectedNumber(null);
-    } else {
-      setPlayersList(prev => {
-        const selectedIndex = prev.findIndex(p => p.number === selectedNumber);
-        const clickedIndex = prev.findIndex(p => p.number === clickedNumber);
-        if (selectedIndex === -1 || clickedIndex === -1) return prev;
-
-        const newPlayers = [...prev];
-        const selectedObj = prev[selectedIndex];
-        const clickedObj = prev[clickedIndex];
-
-        newPlayers[selectedIndex] = { ...selectedObj, x: clickedObj.x, y: clickedObj.y };
-        newPlayers[clickedIndex] = { ...clickedObj, x: selectedObj.x, y: selectedObj.y };
-
-        return newPlayers;
-      });
-      setSelectedNumber(null);
+  const handleSelect = (type: 'player' | 'position', id: number) => {
+    if (!selection) {
+      setSelection({ type, id });
+      return;
     }
+    if (selection.type === type && selection.id === id) {
+      setSelection(null);
+      return;
+    }
+
+    setPlayersList(prev => {
+      const newPlayers = [...prev];
+      
+      let player1Index = -1;
+      let player2Index = -1;
+      let pos1Id: number | undefined;
+      let pos2Id: number | undefined;
+
+      if (selection.type === 'player') {
+         player1Index = newPlayers.findIndex(p => p.number === selection.id);
+         pos1Id = player1Index >= 0 ? newPlayers[player1Index].positionId : undefined;
+      } else {
+         pos1Id = selection.id;
+         player1Index = newPlayers.findIndex(p => p.positionId === selection.id);
+      }
+
+      if (type === 'player') {
+         player2Index = newPlayers.findIndex(p => p.number === id);
+         pos2Id = player2Index >= 0 ? newPlayers[player2Index].positionId : undefined;
+      } else {
+         pos2Id = id;
+         player2Index = newPlayers.findIndex(p => p.positionId === id);
+      }
+
+      if (player1Index >= 0) {
+         newPlayers[player1Index] = { ...newPlayers[player1Index], positionId: pos2Id };
+      }
+      if (player2Index >= 0) {
+         newPlayers[player2Index] = { ...newPlayers[player2Index], positionId: pos1Id };
+      }
+
+      return newPlayers;
+    });
+    setSelection(null);
   };
 
   return (
@@ -186,11 +122,11 @@ export const SoccerField = () => {
         <div className="w-full min-w-[340px] max-w-[680px]">
           <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
             <SoccerFieldBase />
-            <SoccerFieldPlayers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
+            <SoccerFieldPlayers players={playersList} selection={selection} onSelect={handleSelect} />
           </svg>
         </div>
         <div className="flex flex-col">
-          <SoccerMembers players={playersList} selectedNumber={selectedNumber} onSelect={handleSelect} />
+          <SoccerMembers players={playersList} selection={selection} onSelect={handleSelect} />
           <div className="text-red-700 dark:text-red-200 text-blue-700 dark:text-blue-200 text-green-700 dark:text-green-200 text-yellow-700 dark:text-yellow-200"></div>
           <form className="flex w-max mt-2 gap-2">
             <div className="flex grow py-2 gap-2">
@@ -286,27 +222,36 @@ const SoccerFieldBase = () => (
   </g>
 );
 
-const SoccerFieldPlayers = ({ players, selectedNumber, onSelect }: { players: Player[]; selectedNumber: number | null; onSelect: (num: number) => void }) => (
+const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player'|'position', id: number) => void }) => (
   <g>
-    {players.filter(player => player.x && player.y).map((player, index) => (
-      <SoccerFieldPlayer
-        key={index}
-        {...player}
-        isSelected={selectedNumber === player.number}
-        onClick={() => onSelect(player.number)}
-      />
-    ))}
+    {fieldPositions.map((pos) => {
+      const playerInPos = players.find(p => p.positionId === pos.id);
+      const isSelected = (selection?.type === 'position' && selection?.id === pos.id) || 
+                         (selection?.type === 'player' && playerInPos && selection?.id === playerInPos.number);
+      return (
+        <SoccerFieldPlayer
+          key={pos.id}
+          x={pos.x}
+          y={pos.y}
+          name={playerInPos?.name}
+          number={playerInPos?.number}
+          position={pos.role}
+          isSelected={isSelected}
+          onClick={() => onSelect('position', pos.id)}
+        />
+      );
+    })}
   </g>
 );
-const SoccerFieldPlayer = ({ x, y, name, number, position, isSelected, onClick }: Player & { isSelected?: boolean; onClick?: () => void }) => (
+const SoccerFieldPlayer = ({ x, y, name, number, position, isSelected, onClick }: { x: number, y: number, name?: string, number?: number, position: PlayerPosition, isSelected?: boolean, onClick?: () => void }) => (
   <g onClick={onClick} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
     <circle cx={x} cy={y} r={isSelected ? 20 : 16} fill={position.color} stroke={isSelected ? "#ff0000" : "black"} strokeWidth={isSelected ? 3 : 1} />
-    <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={isSelected ? 16 : 14} fill={position.color === 'yellow' ? 'black' : 'white'} fontWeight={isSelected ? 'bold' : 'normal'}>{number}</text>
-    <text x={x} y={y! - (isSelected ? 27 : 23)} textAnchor="middle" fontSize={isSelected ? 28 : 24} fill={isSelected ? "#ff0000" : "black"} fontWeight={isSelected ? "bold" : "normal"}>{name}</text>
+    {number !== undefined && <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={isSelected ? 16 : 14} fill={position.color === 'yellow' ? 'black' : 'white'} fontWeight={isSelected ? 'bold' : 'normal'}>{number}</text>}
+    {name && <text x={x} y={y - (isSelected ? 27 : 23)} textAnchor="middle" fontSize={isSelected ? 28 : 24} fill={isSelected ? "#ff0000" : "black"} fontWeight={isSelected ? "bold" : "normal"}>{name}</text>}
   </g>
 );
 
-const SoccerMembers = ({ players, selectedNumber, onSelect }: { players: Player[]; selectedNumber: number | null; onSelect: (num: number) => void }) => {
+const SoccerMembers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player'|'position', id: number) => void }) => {
   const groupedPlayers =
     Object.entries(Object.groupBy(players, (player) => player.position.name))
       .flatMap(([_key, value]) => value ?? []);
@@ -315,8 +260,8 @@ const SoccerMembers = ({ players, selectedNumber, onSelect }: { players: Player[
       {groupedPlayers.map((player, index) => (
         <li
           key={index}
-          className={`flex gap-2 rounded px-1 cursor-pointer transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 ${selectedNumber === player.number ? 'bg-slate-300 dark:bg-slate-700 font-bold' : ''}`}
-          onClick={() => onSelect(player.number)}
+          className={`flex gap-2 rounded px-1 cursor-pointer transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 ${(selection?.type === 'player' && selection.id === player.number) ? 'bg-slate-300 dark:bg-slate-700 font-bold' : ''}`}
+          onClick={() => onSelect('player', player.number)}
         >
           <span className="w-7 text-right">{player.number}</span>
           <span className={`w-10 text-center text-${player.position.color}-700 dark:text-${player.position.color}-200`}>{player.position.name}</span>
@@ -328,10 +273,15 @@ const SoccerMembers = ({ players, selectedNumber, onSelect }: { players: Player[
 }
 
 type PlayerPosition = { name: string; color: string; order: number };
+type FieldPosition = {
+  id: number;
+  role: PlayerPosition;
+  x: number;
+  y: number;
+};
 type Player = {
   number: number;
   name: string;
   position: PlayerPosition;
-  x?: number;
-  y?: number;
+  positionId?: number;
 };
