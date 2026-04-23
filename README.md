@@ -2,8 +2,6 @@
 
 svg画像で書いて遊ぶ
 
-![画面イメージ](./docs/screen.png)
-
 ## 構成
 
 - Next.js
