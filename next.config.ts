@@ -14,7 +14,6 @@ const createConfig = (phase: string, { defaultConfig }: { defaultConfig: NextCon
     output: 'export',
     basePath: '/svg-draw',
     trailingSlash: true,
-    distDir: 'docs',
     experimental: {},
   };
 };
