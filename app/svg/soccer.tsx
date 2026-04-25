@@ -70,6 +70,11 @@ export const SoccerField = () => {
   const [selectedName, setSelectedName] = useState<string>("");
   const nameInputRef = useRef<HTMLInputElement>(null);
 
+  const formationText = () => {
+    return [soccerPosition.DF, soccerPosition.MF, soccerPosition.FW]
+      .map(p => fieldPositions.filter(fp => fp.role === p).length)
+      .join('-');
+  }
   const handleSelect = (type: 'player' | 'position', id: number) => {
     if (!selection) {
       setSelection({ type, id });
@@ -82,33 +87,33 @@ export const SoccerField = () => {
 
     setPlayersList(prev => {
       const newPlayers = [...prev];
-      
+
       let player1Index = -1;
       let player2Index = -1;
       let pos1Id: number | undefined;
       let pos2Id: number | undefined;
 
       if (selection.type === 'player') {
-         player1Index = newPlayers.findIndex(p => p.number === selection.id);
-         pos1Id = player1Index >= 0 ? newPlayers[player1Index].positionId : undefined;
+        player1Index = newPlayers.findIndex(p => p.number === selection.id);
+        pos1Id = player1Index >= 0 ? newPlayers[player1Index].positionId : undefined;
       } else {
-         pos1Id = selection.id;
-         player1Index = newPlayers.findIndex(p => p.positionId === selection.id);
+        pos1Id = selection.id;
+        player1Index = newPlayers.findIndex(p => p.positionId === selection.id);
       }
 
       if (type === 'player') {
-         player2Index = newPlayers.findIndex(p => p.number === id);
-         pos2Id = player2Index >= 0 ? newPlayers[player2Index].positionId : undefined;
+        player2Index = newPlayers.findIndex(p => p.number === id);
+        pos2Id = player2Index >= 0 ? newPlayers[player2Index].positionId : undefined;
       } else {
-         pos2Id = id;
-         player2Index = newPlayers.findIndex(p => p.positionId === id);
+        pos2Id = id;
+        player2Index = newPlayers.findIndex(p => p.positionId === id);
       }
 
       if (player1Index >= 0) {
-         newPlayers[player1Index] = { ...newPlayers[player1Index], positionId: pos2Id };
+        newPlayers[player1Index] = { ...newPlayers[player1Index], positionId: pos2Id };
       }
       if (player2Index >= 0) {
-         newPlayers[player2Index] = { ...newPlayers[player2Index], positionId: pos1Id };
+        newPlayers[player2Index] = { ...newPlayers[player2Index], positionId: pos1Id };
       }
 
       return newPlayers;
@@ -117,7 +122,7 @@ export const SoccerField = () => {
   };
 
   return (
-    <Card title="サッカーフォーメーション">
+    <Card title={`サッカーフォーメーション (${formationText()})`}>
       <div className="flex gap-4 items-start justify-center">
         <div className="w-full min-w-[340px] max-w-[680px]">
           <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
@@ -131,10 +136,10 @@ export const SoccerField = () => {
           <form className="flex w-max mt-2 gap-2">
             <div className="flex grow py-2 gap-2">
               <select name="position"
-                className="flex-none"
+                className="flex-none bg-slate-300 dark:bg-slate-700"
                 onChange={(e) => { setSelectedPosition(e.target.value) }}>
                 {Object.keys(soccerPosition).map((position, index) => (
-                  <option key={index} className="bg-slate-300 dark:bg-slate-700" value={position}>{position}</option>
+                  <option key={index} value={position}>{position}</option>
                 ))}
               </select>
               <input type="text" name="player" autoComplete="off"
@@ -222,12 +227,12 @@ const SoccerFieldBase = () => (
   </g>
 );
 
-const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player'|'position', id: number) => void }) => (
+const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player' | 'position', id: number) => void }) => (
   <g>
     {fieldPositions.map((pos) => {
       const playerInPos = players.find(p => p.positionId === pos.id);
-      const isSelected = (selection?.type === 'position' && selection?.id === pos.id) || 
-                         (selection?.type === 'player' && playerInPos && selection?.id === playerInPos.number);
+      const isSelected = (selection?.type === 'position' && selection?.id === pos.id) ||
+        (selection?.type === 'player' && playerInPos && selection?.id === playerInPos.number);
       return (
         <SoccerFieldPlayer
           key={pos.id}
@@ -251,7 +256,7 @@ const SoccerFieldPlayer = ({ x, y, name, number, position, isSelected, onClick }
   </g>
 );
 
-const SoccerMembers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player'|'position', id: number) => void }) => {
+const SoccerMembers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player' | 'position', id: number) => void }) => {
   const groupedPlayers =
     Object.entries(Object.groupBy(players, (player) => player.position.name))
       .flatMap(([_key, value]) => value ?? []);
