@@ -118,7 +118,7 @@ const initialPlayers: Player[] = [
 
 type SelectionType = { type: 'player', id: number } | { type: 'position', id: number } | null;
 
-export const SoccerField = () => {
+export const SoccerField = ({ svgRef: externalSvgRef }: { svgRef?: React.RefObject<SVGSVGElement | null> } = {}) => {
   const [currentFormationId, setCurrentFormationId] = useState<string>("4-3-3");
   const [previewFormationId, setPreviewFormationId] = useState<string | null>(null);
   const [playersList, setPlayersList] = useState<Player[]>(initialPlayers);
@@ -126,7 +126,8 @@ export const SoccerField = () => {
   const [selectedPosition, setSelectedPosition] = useState<string>("GK");
   const [selectedName, setSelectedName] = useState<string>("");
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const internalSvgRef = useRef<SVGSVGElement>(null);
+  const svgRef = externalSvgRef || internalSvgRef;
 
   const currentFieldPositions = FORMATIONS[currentFormationId];
 
