@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { Card } from "@/app/ui/card";
+import { motion } from "motion/react";
 
 const soccerPosition: { [key: string]: PlayerPosition } = {
   GK: {
@@ -24,19 +25,73 @@ const soccerPosition: { [key: string]: PlayerPosition } = {
     order: 4,
   },
 }
-const fieldPositions: FieldPosition[] = [
-  { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
-  { id: 2, role: soccerPosition.DF, x: 100, y: 750 },
-  { id: 3, role: soccerPosition.DF, x: 250, y: 800 },
-  { id: 4, role: soccerPosition.DF, x: 430, y: 800 },
-  { id: 5, role: soccerPosition.DF, x: 580, y: 750 },
-  { id: 6, role: soccerPosition.MF, x: 340, y: 600 },
-  { id: 7, role: soccerPosition.MF, x: 230, y: 480 },
-  { id: 8, role: soccerPosition.MF, x: 450, y: 480 },
-  { id: 9, role: soccerPosition.FW, x: 180, y: 250 },
-  { id: 10, role: soccerPosition.FW, x: 500, y: 250 },
-  { id: 11, role: soccerPosition.FW, x: 340, y: 150 },
-];
+const FORMATIONS: Record<string, FieldPosition[]> = {
+  "4-3-3": [
+    { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+    { id: 2, role: soccerPosition.DF, x: 100, y: 750 },
+    { id: 3, role: soccerPosition.DF, x: 250, y: 800 },
+    { id: 4, role: soccerPosition.DF, x: 430, y: 800 },
+    { id: 5, role: soccerPosition.DF, x: 580, y: 750 },
+    { id: 6, role: soccerPosition.MF, x: 340, y: 600 },
+    { id: 7, role: soccerPosition.MF, x: 230, y: 480 },
+    { id: 8, role: soccerPosition.MF, x: 450, y: 480 },
+    { id: 9, role: soccerPosition.FW, x: 180, y: 250 },
+    { id: 10, role: soccerPosition.FW, x: 500, y: 250 },
+    { id: 11, role: soccerPosition.FW, x: 340, y: 150 },
+  ],
+  "4-4-2": [
+    { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+    { id: 2, role: soccerPosition.DF, x: 100, y: 750 },
+    { id: 3, role: soccerPosition.DF, x: 250, y: 800 },
+    { id: 4, role: soccerPosition.DF, x: 430, y: 800 },
+    { id: 5, role: soccerPosition.DF, x: 580, y: 750 },
+    { id: 6, role: soccerPosition.MF, x: 150, y: 550 },
+    { id: 7, role: soccerPosition.MF, x: 280, y: 600 },
+    { id: 8, role: soccerPosition.MF, x: 400, y: 600 },
+    { id: 9, role: soccerPosition.MF, x: 530, y: 550 },
+    { id: 10, role: soccerPosition.FW, x: 250, y: 250 },
+    { id: 11, role: soccerPosition.FW, x: 430, y: 250 },
+  ],
+  "4-2-3-1": [
+    { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+    { id: 2, role: soccerPosition.DF, x: 100, y: 750 },
+    { id: 3, role: soccerPosition.DF, x: 250, y: 800 },
+    { id: 4, role: soccerPosition.DF, x: 430, y: 800 },
+    { id: 5, role: soccerPosition.DF, x: 580, y: 750 },
+    { id: 6, role: soccerPosition.MF, x: 250, y: 600 },
+    { id: 7, role: soccerPosition.MF, x: 430, y: 600 },
+    { id: 8, role: soccerPosition.MF, x: 150, y: 400 },
+    { id: 9, role: soccerPosition.MF, x: 340, y: 400 },
+    { id: 10, role: soccerPosition.MF, x: 530, y: 400 },
+    { id: 11, role: soccerPosition.FW, x: 340, y: 200 },
+  ],
+  "3-5-2": [
+    { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+    { id: 2, role: soccerPosition.DF, x: 180, y: 800 },
+    { id: 3, role: soccerPosition.DF, x: 340, y: 800 },
+    { id: 4, role: soccerPosition.DF, x: 500, y: 800 },
+    { id: 5, role: soccerPosition.MF, x: 100, y: 550 },
+    { id: 6, role: soccerPosition.MF, x: 250, y: 600 },
+    { id: 7, role: soccerPosition.MF, x: 340, y: 500 },
+    { id: 8, role: soccerPosition.MF, x: 430, y: 600 },
+    { id: 9, role: soccerPosition.MF, x: 580, y: 550 },
+    { id: 10, role: soccerPosition.FW, x: 250, y: 250 },
+    { id: 11, role: soccerPosition.FW, x: 430, y: 250 },
+  ],
+  "3-4-3": [
+    { id: 1, role: soccerPosition.GK, x: 340, y: 950 },
+    { id: 2, role: soccerPosition.DF, x: 180, y: 800 },
+    { id: 3, role: soccerPosition.DF, x: 340, y: 800 },
+    { id: 4, role: soccerPosition.DF, x: 500, y: 800 },
+    { id: 5, role: soccerPosition.MF, x: 150, y: 600 },
+    { id: 6, role: soccerPosition.MF, x: 280, y: 550 },
+    { id: 7, role: soccerPosition.MF, x: 400, y: 550 },
+    { id: 8, role: soccerPosition.MF, x: 530, y: 600 },
+    { id: 9, role: soccerPosition.FW, x: 180, y: 250 },
+    { id: 10, role: soccerPosition.FW, x: 500, y: 250 },
+    { id: 11, role: soccerPosition.FW, x: 340, y: 150 },
+  ]
+};
 
 const initialPlayers: Player[] = [
   { number: 1, name: "鈴木 彩艶", position: soccerPosition.GK },
@@ -64,16 +119,19 @@ const initialPlayers: Player[] = [
 type SelectionType = { type: 'player', id: number } | { type: 'position', id: number } | null;
 
 export const SoccerField = () => {
+  const [currentFormationId, setCurrentFormationId] = useState<string>("4-3-3");
+  const [previewFormationId, setPreviewFormationId] = useState<string | null>(null);
   const [playersList, setPlayersList] = useState<Player[]>(initialPlayers);
   const [selection, setSelection] = useState<SelectionType>(null);
   const [selectedPosition, setSelectedPosition] = useState<string>("GK");
   const [selectedName, setSelectedName] = useState<string>("");
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const currentFieldPositions = FORMATIONS[currentFormationId];
 
   const formationText = () => {
-    return [soccerPosition.DF, soccerPosition.MF, soccerPosition.FW]
-      .map(p => fieldPositions.filter(fp => fp.role === p).length)
-      .join('-');
+    return currentFormationId;
   }
   const handleSelect = (type: 'player' | 'position', id: number) => {
     if (!selection) {
@@ -125,9 +183,63 @@ export const SoccerField = () => {
     <Card title={`サッカーフォーメーション (${formationText()})`}>
       <div className="flex gap-4 items-start justify-center">
         <div className="w-full min-w-[340px] max-w-[680px]">
-          <svg width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
+          <div className="mb-4">
+            <label className="mr-2 font-bold">フォーメーション:</label>
+            <select
+              value={currentFormationId}
+              onChange={(e) => setCurrentFormationId(e.target.value)}
+              className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded p-1"
+            >
+              {Object.keys(FORMATIONS).map(fid => (
+                <option key={fid} value={fid}>{fid}</option>
+              ))}
+            </select>
+          </div>
+          <svg ref={svgRef} width="100%" height="100%" viewBox="0 0 680 1050" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinecap: 'round', strokeLinejoin: 'round', strokeMiterlimit: 1.5 }}>
             <SoccerFieldBase />
-            <SoccerFieldPlayers players={playersList} selection={selection} onSelect={handleSelect} />
+            <SoccerFieldPlayers
+              players={playersList}
+              selection={selection}
+              onSelect={handleSelect}
+              fieldPositions={currentFieldPositions}
+              previewPositions={previewFormationId ? FORMATIONS[previewFormationId] : null}
+              onDragMarker={(id, info, startX, startY) => {
+                if (!svgRef.current) return;
+                const CTM = svgRef.current.getScreenCTM();
+                if (!CTM) return;
+                const dx = info.offset.x / CTM.a;
+                const dy = info.offset.y / CTM.d;
+
+                const currentX = startX + dx;
+                const currentY = startY + dy;
+
+                let bestFormationId = currentFormationId;
+                let minCost = Infinity;
+
+                Object.entries(FORMATIONS).forEach(([fid, positions]) => {
+                  const targetPos = positions.find(p => p.id === id);
+                  if (targetPos) {
+                    const dist = Math.sqrt(Math.pow(targetPos.x - currentX, 2) + Math.pow(targetPos.y - currentY, 2));
+                    if (dist < minCost) {
+                      minCost = dist;
+                      bestFormationId = fid;
+                    }
+                  }
+                });
+
+                if (minCost < 150) {
+                  setPreviewFormationId(bestFormationId);
+                } else {
+                  setPreviewFormationId(null);
+                }
+              }}
+              onDragMarkerEnd={() => {
+                if (previewFormationId) {
+                  setCurrentFormationId(previewFormationId);
+                }
+                setPreviewFormationId(null);
+              }}
+            />
           </svg>
         </div>
         <div className="flex flex-col">
@@ -227,8 +339,13 @@ const SoccerFieldBase = () => (
   </g>
 );
 
-const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player' | 'position', id: number) => void }) => (
+const SoccerFieldPlayers = ({ players, selection, onSelect, fieldPositions, previewPositions, onDragMarker, onDragMarkerEnd }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player' | 'position', id: number) => void; fieldPositions: FieldPosition[]; previewPositions: FieldPosition[] | null; onDragMarker: (id: number, info: any, startX: number, startY: number) => void; onDragMarkerEnd: () => void; }) => (
   <g>
+    {previewPositions && previewPositions.map((pos) => (
+      <g key={`preview-${pos.id}`} style={{ opacity: 0.3 }}>
+        <circle cx={pos.x} cy={pos.y} r={16} fill={pos.role.color} stroke="black" strokeWidth={1} />
+      </g>
+    ))}
     {fieldPositions.map((pos) => {
       const playerInPos = players.find(p => p.positionId === pos.id);
       const isSelected = (selection?.type === 'position' && selection?.id === pos.id) ||
@@ -236,6 +353,7 @@ const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[
       return (
         <SoccerFieldPlayer
           key={pos.id}
+          id={pos.id}
           x={pos.x}
           y={pos.y}
           name={playerInPos?.name}
@@ -243,17 +361,29 @@ const SoccerFieldPlayers = ({ players, selection, onSelect }: { players: Player[
           position={pos.role}
           isSelected={isSelected}
           onClick={() => onSelect('position', pos.id)}
+          onDrag={(e, info) => onDragMarker(pos.id, info, pos.x, pos.y)}
+          onDragEnd={onDragMarkerEnd}
         />
       );
     })}
   </g>
 );
-const SoccerFieldPlayer = ({ x, y, name, number, position, isSelected, onClick }: { x: number, y: number, name?: string, number?: number, position: PlayerPosition, isSelected?: boolean, onClick?: () => void }) => (
-  <g onClick={onClick} className="cursor-pointer" style={{ transition: 'all 0.2s' }}>
-    <circle cx={x} cy={y} r={isSelected ? 20 : 16} fill={position.color} stroke={isSelected ? "#ff0000" : "black"} strokeWidth={isSelected ? 3 : 1} />
-    {number !== undefined && <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={isSelected ? 16 : 14} fill={position.color === 'yellow' ? 'black' : 'white'} fontWeight={isSelected ? 'bold' : 'normal'}>{number}</text>}
-    {name && <text x={x} y={y - (isSelected ? 27 : 23)} textAnchor="middle" fontSize={isSelected ? 28 : 24} fill={isSelected ? "#ff0000" : "black"} fontWeight={isSelected ? "bold" : "normal"}>{name}</text>}
-  </g>
+const SoccerFieldPlayer = ({ id, x, y, name, number, position, isSelected, onClick, onDrag, onDragEnd }: { id: number, x: number, y: number, name?: string, number?: number, position: PlayerPosition, isSelected?: boolean, onClick?: () => void, onDrag?: (e: any, info: any) => void, onDragEnd?: () => void }) => (
+  <motion.g
+    onClick={onClick}
+    className="cursor-pointer"
+    initial={false}
+    animate={{ x, y }}
+    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    drag
+    dragMomentum={false}
+    onDrag={onDrag}
+    onDragEnd={onDragEnd}
+  >
+    <circle cx={0} cy={0} r={isSelected ? 20 : 16} fill={position.color} stroke={isSelected ? "#ff0000" : "black"} strokeWidth={isSelected ? 3 : 1} style={{ transition: 'all 0.2s' }} />
+    {number !== undefined && <text x={0} y={0} textAnchor="middle" dominantBaseline="central" fontSize={isSelected ? 16 : 14} fill={position.color === 'yellow' ? 'black' : 'white'} fontWeight={isSelected ? 'bold' : 'normal'} style={{ pointerEvents: 'none', transition: 'all 0.2s' }}>{number}</text>}
+    {name && <text x={0} y={-(isSelected ? 27 : 23)} textAnchor="middle" fontSize={isSelected ? 28 : 24} fill={isSelected ? "#ff0000" : "black"} fontWeight={isSelected ? "bold" : "normal"} style={{ pointerEvents: 'none', transition: 'all 0.2s' }}>{name}</text>}
+  </motion.g>
 );
 
 const SoccerMembers = ({ players, selection, onSelect }: { players: Player[]; selection: SelectionType; onSelect: (type: 'player' | 'position', id: number) => void }) => {
