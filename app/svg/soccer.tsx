@@ -373,7 +373,7 @@ const SoccerFieldPlayer = ({ id, x, y, name, number, position, isSelected, onCli
   <motion.g
     onClick={onClick}
     className="cursor-pointer"
-    initial={false}
+    initial={{ x, y }}
     animate={{ x, y }}
     transition={{ type: "spring", stiffness: 300, damping: 30 }}
     drag
