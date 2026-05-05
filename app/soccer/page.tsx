@@ -47,6 +47,13 @@ export default function Soccer() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+      // 追加: 透かし(Watermark)の描画
+      ctx.font = "bold 24px 'Inter', sans-serif";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
+      ctx.fillText("© walk8243", canvas.width - 20, canvas.height - 20);
+
       const jpgUrl = canvas.toDataURL("image/jpeg", 0.9);
       const a = document.createElement("a");
       a.href = jpgUrl;
